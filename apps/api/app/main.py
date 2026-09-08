@@ -26,9 +26,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+origins = list(set(settings.cors_origin_list + [
+    frontend_url,
+    "https://your-project-name.vercel.app", 
+]))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origin_list,
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
