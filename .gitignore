@@ -14,14 +14,42 @@ dist/
 venv/
 __pycache__/
 *.pyc
+*.pyo
+*.egg-info/
+.eggs/
+*.egg
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
 
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Logs
 *.log
+logs/
+
+# Testing / Coverage
+coverage/
+.coverage
+htmlcov/
+.pytest_cache/
+.nyc_output/
+
+# Docker
+docker-data/
+
+# Build
+build/
+*.tsbuildinfo
+
+# Alembic
+alembic/versions/__pycache__/
+# Uploads
+apps/api/uploads/
+uploads/

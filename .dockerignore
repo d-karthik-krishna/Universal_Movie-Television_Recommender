@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+dist/
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.git/
+.env
+.env.local
+coverage/
+.pytest_cache/

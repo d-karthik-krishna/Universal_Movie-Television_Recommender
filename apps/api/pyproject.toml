@@ -1,0 +1,6 @@
+[project]
+name = "cinesphere-api"
+version = "0.1.0"
+description = "CineSphere API"
+readme = "README.md"
+requires-python = ">=3.11"
