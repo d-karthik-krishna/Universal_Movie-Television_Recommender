@@ -41,8 +41,6 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgresql+asyncpg://cinesphere:cinesphere@postgres:5432/cinesphere
-      REDIS_URL: redis://redis:6379/0
       CORS_ORIGINS: http://localhost:3000
       ENVIRONMENT: development
     volumes:
