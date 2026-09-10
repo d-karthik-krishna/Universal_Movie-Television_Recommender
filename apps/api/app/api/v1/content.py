@@ -23,8 +23,21 @@ async def get_trending(
     db: AsyncSession = Depends(get_db)
 ):
     """Get trending content. Fetches from TMDB and hydrates DB automatically."""
-    service = ContentSyncService(db)
-    return await service.get_or_sync_trending(media_type, time_window)
+    import traceback
+    try:
+        service = ContentSyncService(db)
+        return await service.get_or_sync_trending(media_type, time_window)
+    except Exception as e:
+        print(f"TRENDING ERROR: {e}")
+        traceback.print_exc()
+        # Fallback: return TMDB data directly without DB sync
+        try:
+            tmdb_res = await tmdb_provider.get_trending(media_type, time_window)
+            return tmdb_res
+        except Exception as e2:
+            print(f"TMDB FALLBACK ERROR: {e2}")
+            traceback.print_exc()
+            raise
 
 @router.get("/discover")
 async def discover_content(
@@ -38,21 +51,45 @@ async def discover_content(
     db: AsyncSession = Depends(get_db)
 ):
     """Discover content by filters. Hydrates DB automatically."""
-    service = ContentSyncService(db)
-    
-    filters = {"page": page}
-    if with_original_language:
-        filters["with_original_language"] = with_original_language
-    if with_genres:
-        filters["with_genres"] = with_genres
-    if with_origin_country:
-        filters["with_origin_country"] = with_origin_country
-    if sort_by:
-        filters["sort_by"] = sort_by
-    if vote_count_gte is not None:
-        filters["vote_count.gte"] = vote_count_gte
+    import traceback
+    try:
+        service = ContentSyncService(db)
         
-    return await service.discover_content(media_type, **filters)
+        filters = {"page": page}
+        if with_original_language:
+            filters["with_original_language"] = with_original_language
+        if with_genres:
+            filters["with_genres"] = with_genres
+        if with_origin_country:
+            filters["with_origin_country"] = with_origin_country
+        if sort_by:
+            filters["sort_by"] = sort_by
+        if vote_count_gte is not None:
+            filters["vote_count.gte"] = vote_count_gte
+            
+        return await service.discover_content(media_type, **filters)
+    except Exception as e:
+        print(f"DISCOVER ERROR: {e}")
+        traceback.print_exc()
+        # Fallback: return TMDB data directly without DB sync
+        try:
+            filters = {"page": page}
+            if with_original_language:
+                filters["with_original_language"] = with_original_language
+            if with_genres:
+                filters["with_genres"] = with_genres
+            if with_origin_country:
+                filters["with_origin_country"] = with_origin_country
+            if sort_by:
+                filters["sort_by"] = sort_by
+            if vote_count_gte is not None:
+                filters["vote_count.gte"] = vote_count_gte
+            tmdb_res = await tmdb_provider.discover(media_type, **filters)
+            return tmdb_res
+        except Exception as e2:
+            print(f"TMDB FALLBACK ERROR: {e2}")
+            traceback.print_exc()
+            raise
 
 @router.get("/search")
 async def search_content(
