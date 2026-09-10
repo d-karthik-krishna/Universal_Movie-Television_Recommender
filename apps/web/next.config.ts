@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
       {
         // Proxy API requests to the Render backend
         source: "/api/backend/:path*",
-        destination: `${process.env.BACKEND_API_URL || 'http://localhost:8000'}/api/v1/:path*`,
+        destination: `${process.env.BACKEND_API_URL || 'http://localhost:8000'}/:path*`,
       },
     ];
   },
