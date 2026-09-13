@@ -8,7 +8,7 @@ export async function submitRating(tmdbId: number, mediaType: string, rating: nu
   const token = await getToken()
   if (!token) throw new Error('Not authenticated')
 
-  const baseUrl = process.env.INTERNAL_API_URL || process.env.BACKEND_API_URL || API_URL
+  const baseUrl = API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/user/rating`, {
     method: 'POST',
@@ -34,7 +34,7 @@ export async function getRating(tmdbId: number, mediaType: string): Promise<{rat
   const token = await getToken()
   if (!token) return { rating: null, review: null }
 
-  const baseUrl = process.env.INTERNAL_API_URL || process.env.BACKEND_API_URL || API_URL
+  const baseUrl = API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/user/rating/${tmdbId}/${mediaType}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -49,7 +49,7 @@ export async function getAllRatings(): Promise<any[]> {
   const token = await getToken()
   if (!token) return []
 
-  const baseUrl = process.env.INTERNAL_API_URL || process.env.BACKEND_API_URL || API_URL
+  const baseUrl = API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/user/ratings`, {
     headers: { Authorization: `Bearer ${token}` },

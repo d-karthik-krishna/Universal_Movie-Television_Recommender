@@ -22,8 +22,9 @@ export function WatchlistButton({ tmdbId, mediaType }: Props) {
       } else {
         await addToWatchlist(tmdbId, mediaType)
       }
-    } catch (err) {
-      alert('Please sign in to modify your watchlist.')
+    } catch (err: any) {
+      console.error("Watchlist error:", err)
+      alert(err.message || 'Please sign in to modify your watchlist.')
     } finally {
       setLoading(false)
     }

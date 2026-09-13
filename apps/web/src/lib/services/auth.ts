@@ -3,16 +3,14 @@
 import { API_URL } from '../constants'
 import { setTokenCookie, removeTokenCookie, getToken } from '@/app/actions/auth'
 
-function getBaseUrl() {
-  return process.env.INTERNAL_API_URL || process.env.BACKEND_API_URL || API_URL
-}
+
 
 export async function loginUser(username: string, password: string) {
   const formData = new URLSearchParams()
   formData.append('username', username)
   formData.append('password', password)
 
-  const baseUrl = getBaseUrl()
+  const baseUrl = API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/auth/login`, {
     method: 'POST',
@@ -33,7 +31,7 @@ export async function loginUser(username: string, password: string) {
 }
 
 export async function registerUser(email: string, username: string, password: string) {
-  const baseUrl = getBaseUrl()
+  const baseUrl = API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/auth/register`, {
     method: 'POST',
@@ -59,7 +57,7 @@ export async function getCurrentUser() {
   const token = await getToken()
   if (!token) return null
   
-  const baseUrl = getBaseUrl()
+  const baseUrl = API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/auth/me`, {
     headers: {
@@ -76,7 +74,7 @@ export async function updateUser(data: { display_name?: string, username?: strin
   const token = await getToken()
   if (!token) throw new Error('Not authenticated')
 
-  const baseUrl = getBaseUrl()
+  const baseUrl = API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/auth/me`, {
     method: 'PATCH',
@@ -99,7 +97,7 @@ export async function uploadAvatar(file: File) {
   const token = await getToken()
   if (!token) throw new Error('Not authenticated')
 
-  const baseUrl = getBaseUrl()
+  const baseUrl = API_URL
 
   const formData = new FormData()
   formData.append('file', file)

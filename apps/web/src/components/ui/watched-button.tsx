@@ -39,8 +39,9 @@ export function WatchedButton({ tmdbId, mediaType, seasons }: WatchedButtonProps
           removeFromWatchlistState(tmdbId)
         }
       }
-    } catch (err) {
-      alert('Please sign in to track your watched content.')
+    } catch (err: any) {
+      console.error("Watch error:", err)
+      alert(err.message || 'Please sign in to track your watched content.')
     } finally {
       setLoading(false)
     }
