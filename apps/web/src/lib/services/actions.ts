@@ -8,7 +8,7 @@ export async function addToWatchlist(tmdbId: number, mediaType: string) {
   const token = await getToken()
   if (!token) throw new Error('Not authenticated')
 
-  const baseUrl = process.env.INTERNAL_API_URL || API_URL
+  const baseUrl = process.env.INTERNAL_API_URL || process.env.BACKEND_API_URL || API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/user/watchlist`, {
     method: 'POST',
@@ -31,7 +31,7 @@ export async function removeFromWatchlist(tmdbId: number, mediaType: string) {
   const token = await getToken()
   if (!token) throw new Error('Not authenticated')
 
-  const baseUrl = process.env.INTERNAL_API_URL || API_URL
+  const baseUrl = process.env.INTERNAL_API_URL || process.env.BACKEND_API_URL || API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/user/watchlist/${tmdbId}/${mediaType}`, {
     method: 'DELETE',
@@ -52,7 +52,7 @@ export async function getWatchlist() {
   const token = await getToken()
   if (!token) return []
 
-  const baseUrl = process.env.INTERNAL_API_URL || API_URL
+  const baseUrl = process.env.INTERNAL_API_URL || process.env.BACKEND_API_URL || API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/user/watchlist`, {
     headers: {

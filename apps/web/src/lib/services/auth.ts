@@ -1,12 +1,20 @@
+'use server'
+
 import { API_URL } from '../constants'
 import { setTokenCookie, removeTokenCookie, getToken } from '@/app/actions/auth'
+
+function getBaseUrl() {
+  return process.env.INTERNAL_API_URL || process.env.BACKEND_API_URL || API_URL
+}
 
 export async function loginUser(username: string, password: string) {
   const formData = new URLSearchParams()
   formData.append('username', username)
   formData.append('password', password)
 
-  const res = await fetch(`${API_URL}/api/v1/auth/login`, {
+  const baseUrl = getBaseUrl()
+
+  const res = await fetch(`${baseUrl}/api/v1/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -15,7 +23,8 @@ export async function loginUser(username: string, password: string) {
   })
 
   if (!res.ok) {
-    throw new Error('Invalid credentials')
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.detail || 'Invalid credentials')
   }
 
   const data = await res.json()
@@ -24,7 +33,9 @@ export async function loginUser(username: string, password: string) {
 }
 
 export async function registerUser(email: string, username: string, password: string) {
-  const res = await fetch(`${API_URL}/api/v1/auth/register`, {
+  const baseUrl = getBaseUrl()
+
+  const res = await fetch(`${baseUrl}/api/v1/auth/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +44,7 @@ export async function registerUser(email: string, username: string, password: st
   })
 
   if (!res.ok) {
-    const err = await res.json()
+    const err = await res.json().catch(() => ({}))
     throw new Error(err.detail || 'Registration failed')
   }
 
@@ -48,10 +59,13 @@ export async function getCurrentUser() {
   const token = await getToken()
   if (!token) return null
   
-  const res = await fetch(`${API_URL}/api/v1/auth/me`, {
+  const baseUrl = getBaseUrl()
+
+  const res = await fetch(`${baseUrl}/api/v1/auth/me`, {
     headers: {
       Authorization: `Bearer ${token}`
-    }
+    },
+    cache: 'no-store'
   })
 
   if (!res.ok) return null
@@ -62,7 +76,9 @@ export async function updateUser(data: { display_name?: string, username?: strin
   const token = await getToken()
   if (!token) throw new Error('Not authenticated')
 
-  const res = await fetch(`${API_URL}/api/v1/auth/me`, {
+  const baseUrl = getBaseUrl()
+
+  const res = await fetch(`${baseUrl}/api/v1/auth/me`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -72,7 +88,7 @@ export async function updateUser(data: { display_name?: string, username?: strin
   })
 
   if (!res.ok) {
-    const err = await res.json()
+    const err = await res.json().catch(() => ({}))
     throw new Error(err.detail || 'Update failed')
   }
 
@@ -83,10 +99,12 @@ export async function uploadAvatar(file: File) {
   const token = await getToken()
   if (!token) throw new Error('Not authenticated')
 
+  const baseUrl = getBaseUrl()
+
   const formData = new FormData()
   formData.append('file', file)
 
-  const res = await fetch(`${API_URL}/api/v1/auth/me/avatar`, {
+  const res = await fetch(`${baseUrl}/api/v1/auth/me/avatar`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`

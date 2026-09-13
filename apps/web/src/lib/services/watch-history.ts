@@ -8,7 +8,7 @@ export async function getWatchedIds(): Promise<number[]> {
   const token = await getToken()
   if (!token) return []
 
-  const baseUrl = process.env.INTERNAL_API_URL || API_URL
+  const baseUrl = process.env.INTERNAL_API_URL || process.env.BACKEND_API_URL || API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/user/watched/ids`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -24,7 +24,7 @@ export async function getWatchHistory(): Promise<any[]> {
   const token = await getToken()
   if (!token) return []
 
-  const baseUrl = process.env.INTERNAL_API_URL || API_URL
+  const baseUrl = process.env.INTERNAL_API_URL || process.env.BACKEND_API_URL || API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/user/history`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -39,7 +39,7 @@ export async function markAsWatched(tmdbId: number, mediaType: string) {
   const token = await getToken()
   if (!token) throw new Error('Not authenticated')
 
-  const baseUrl = process.env.INTERNAL_API_URL || API_URL
+  const baseUrl = process.env.INTERNAL_API_URL || process.env.BACKEND_API_URL || API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/user/watched`, {
     method: 'POST',
@@ -62,7 +62,7 @@ export async function unmarkAsWatched(tmdbId: number, mediaType: string) {
   const token = await getToken()
   if (!token) throw new Error('Not authenticated')
 
-  const baseUrl = process.env.INTERNAL_API_URL || API_URL
+  const baseUrl = process.env.INTERNAL_API_URL || process.env.BACKEND_API_URL || API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/user/watched/${tmdbId}/${mediaType}`, {
     method: 'DELETE',
@@ -81,7 +81,7 @@ export async function getSeriesProgress(tmdbId: number): Promise<Record<string, 
   const token = await getToken()
   if (!token) return {}
 
-  const baseUrl = process.env.INTERNAL_API_URL || API_URL
+  const baseUrl = process.env.INTERNAL_API_URL || process.env.BACKEND_API_URL || API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/user/watched/${tmdbId}/progress`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -103,7 +103,7 @@ export async function saveSeasonProgress(
   const token = await getToken()
   if (!token) throw new Error('Not authenticated')
 
-  const baseUrl = process.env.INTERNAL_API_URL || API_URL
+  const baseUrl = process.env.INTERNAL_API_URL || process.env.BACKEND_API_URL || API_URL
 
   const res = await fetch(`${baseUrl}/api/v1/user/watched/season`, {
     method: 'POST',

@@ -113,15 +113,11 @@ async def upload_avatar(
     # the relative URL and the frontend can append API_URL, or we return the full URL.
     # Actually, returning a relative URL like /uploads/filename is fine.
     
-    avatar_url = f"http://localhost:8000/uploads/{filename}"
+    avatar_url = f"/uploads/{filename}"
     
-    # We should detect if the environment has a specific public URL, but hardcoding for localhost is okay
-    # for this local setup, since the frontend uses http://localhost:8000
-    from app.config import get_settings
-    settings = get_settings()
-    
-    # Check if there is a frontend URL or use localhost
-    # Let's just use localhost:8000
+    # Use the public backend URL for the avatar
+    public_url = os.getenv("BACKEND_PUBLIC_URL") or os.getenv("RENDER_EXTERNAL_URL") or "http://localhost:8000"
+    avatar_url = f"{public_url}/uploads/{filename}"
     
     setattr(current_user, "avatar_url", avatar_url)
     await db.commit()
