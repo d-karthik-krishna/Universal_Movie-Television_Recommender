@@ -26,6 +26,8 @@ import { WatchlistProvider } from '@/components/providers/watchlist-provider'
 import { WatchedProvider } from '@/components/providers/watched-provider'
 import { FavoritesProvider } from '@/components/providers/favorites-provider'
 
+export const dynamic = 'force-dynamic'
+
 export default async function RootLayout({
   children,
 }: Readonly<{
