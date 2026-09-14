@@ -17,14 +17,20 @@ export default function LoginPage() {
 
     const formData = new FormData(e.currentTarget)
     try {
-      await loginUser(
+      const result = await loginUser(
         formData.get('username') as string,
         formData.get('password') as string
       )
-      // Hard refresh to update Server Components state
-      window.location.href = '/'
+      
+      if (result.error) {
+        setError(result.error)
+        setLoading(false)
+      } else {
+        // Hard refresh to update Server Components state
+        window.location.href = '/'
+      }
     } catch (err: any) {
-      setError(err.message)
+      setError('An unexpected error occurred')
       setLoading(false)
     }
   }

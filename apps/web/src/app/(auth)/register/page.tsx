@@ -21,12 +21,24 @@ export default function RegisterPage() {
     const password = formData.get('password') as string
 
     try {
-      await registerUser(email, username, password)
+      const regResult = await registerUser(email, username, password)
+      if (regResult.error) {
+        setError(regResult.error)
+        setLoading(false)
+        return
+      }
+
       // Auto login after register
-      await loginUser(username, password)
+      const loginResult = await loginUser(username, password)
+      if (loginResult.error) {
+        setError(loginResult.error)
+        setLoading(false)
+        return
+      }
+
       window.location.href = '/'
     } catch (err: any) {
-      setError(err.message)
+      setError('An unexpected error occurred')
       setLoading(false)
     }
   }

@@ -22,12 +22,12 @@ export async function loginUser(username: string, password: string) {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
-    throw new Error(err.detail || 'Invalid credentials')
+    return { error: err.detail || 'Invalid credentials' }
   }
 
   const data = await res.json()
   await setTokenCookie(data.access_token)
-  return data
+  return { success: true, data }
 }
 
 export async function registerUser(email: string, username: string, password: string) {
@@ -43,10 +43,11 @@ export async function registerUser(email: string, username: string, password: st
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
-    throw new Error(err.detail || 'Registration failed')
+    return { error: err.detail || 'Registration failed' }
   }
 
-  return res.json()
+  const data = await res.json()
+  return { success: true, data }
 }
 
 export async function logoutUser() {
