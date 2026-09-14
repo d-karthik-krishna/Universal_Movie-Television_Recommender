@@ -29,7 +29,8 @@ export function WatchedProvider({
     })
     
     try {
-      await serverMarkAsWatched(tmdbId, mediaType)
+      const res = await serverMarkAsWatched(tmdbId, mediaType)
+      if (res?.error) throw new Error(res.error)
     } catch (err) {
       setWatched(prev => {
         const newSet = new Set(prev)
@@ -48,7 +49,8 @@ export function WatchedProvider({
     })
     
     try {
-      await serverUnmarkAsWatched(tmdbId, mediaType)
+      const res = await serverUnmarkAsWatched(tmdbId, mediaType)
+      if (res?.error) throw new Error(res.error)
     } catch (err) {
       setWatched(prev => {
         const newSet = new Set(prev)

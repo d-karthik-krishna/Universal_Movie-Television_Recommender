@@ -31,7 +31,8 @@ export function WatchlistProvider({
     })
     
     try {
-      await serverAddToWatchlist(tmdbId, mediaType)
+      const res = await serverAddToWatchlist(tmdbId, mediaType)
+      if (res?.error) throw new Error(res.error)
     } catch (err) {
       // Revert if failed
       setWatchlist(prev => {
@@ -52,7 +53,8 @@ export function WatchlistProvider({
     })
     
     try {
-      await serverRemoveFromWatchlist(tmdbId, mediaType)
+      const res = await serverRemoveFromWatchlist(tmdbId, mediaType)
+      if (res?.error) throw new Error(res.error)
     } catch (err) {
       // Revert if failed
       setWatchlist(prev => {

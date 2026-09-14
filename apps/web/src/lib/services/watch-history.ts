@@ -37,7 +37,7 @@ export async function getWatchHistory(): Promise<any[]> {
 
 export async function markAsWatched(tmdbId: number, mediaType: string) {
   const token = await getToken()
-  if (!token) throw new Error('Not authenticated')
+  if (!token) return { error: 'Not authenticated' }
 
   const baseUrl = API_URL
 
@@ -50,17 +50,20 @@ export async function markAsWatched(tmdbId: number, mediaType: string) {
     body: JSON.stringify({ tmdb_id: tmdbId, media_type: mediaType })
   })
 
-  if (!res.ok) throw new Error('Failed to mark as watched')
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    return { error: err.detail || 'Failed to mark as watched' }
+  }
   
   revalidatePath('/profile')
   revalidatePath('/')
   
-  return res.json()
+  return { success: true, data: await res.json() }
 }
 
 export async function unmarkAsWatched(tmdbId: number, mediaType: string) {
   const token = await getToken()
-  if (!token) throw new Error('Not authenticated')
+  if (!token) return { error: 'Not authenticated' }
 
   const baseUrl = API_URL
 
@@ -69,12 +72,15 @@ export async function unmarkAsWatched(tmdbId: number, mediaType: string) {
     headers: { Authorization: `Bearer ${token}` }
   })
 
-  if (!res.ok) throw new Error('Failed to unmark as watched')
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    return { error: err.detail || 'Failed to unmark as watched' }
+  }
   
   revalidatePath('/profile')
   revalidatePath('/')
   
-  return res.json()
+  return { success: true, data: await res.json() }
 }
 
 export async function getSeriesProgress(tmdbId: number): Promise<Record<string, any>> {
@@ -101,7 +107,7 @@ export async function saveSeasonProgress(
   totalEpisodes: number
 ) {
   const token = await getToken()
-  if (!token) throw new Error('Not authenticated')
+  if (!token) return { error: 'Not authenticated' }
 
   const baseUrl = API_URL
 
@@ -120,10 +126,13 @@ export async function saveSeasonProgress(
     })
   })
 
-  if (!res.ok) throw new Error('Failed to save season progress')
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    return { error: err.detail || 'Failed to save season progress' }
+  }
   
   revalidatePath('/profile')
   revalidatePath('/')
   
-  return res.json()
+  return { success: true, data: await res.json() }
 }

@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache'
 
 export async function addToWatchlist(tmdbId: number, mediaType: string) {
   const token = await getToken()
-  if (!token) throw new Error('Not authenticated')
+  if (!token) return { error: 'Not authenticated' }
 
   const baseUrl = API_URL
 
@@ -19,17 +19,20 @@ export async function addToWatchlist(tmdbId: number, mediaType: string) {
     body: JSON.stringify({ tmdb_id: tmdbId, media_type: mediaType })
   })
 
-  if (!res.ok) throw new Error('Failed to add to watchlist')
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    return { error: err.detail || 'Failed to add to watchlist' }
+  }
   
   revalidatePath('/profile')
   revalidatePath('/') // also revalidate home page for recommendations
   
-  return res.json()
+  return { success: true, data: await res.json() }
 }
 
 export async function removeFromWatchlist(tmdbId: number, mediaType: string) {
   const token = await getToken()
-  if (!token) throw new Error('Not authenticated')
+  if (!token) return { error: 'Not authenticated' }
 
   const baseUrl = API_URL
 
@@ -40,12 +43,15 @@ export async function removeFromWatchlist(tmdbId: number, mediaType: string) {
     }
   })
 
-  if (!res.ok) throw new Error('Failed to remove from watchlist')
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    return { error: err.detail || 'Failed to remove from watchlist' }
+  }
   
   revalidatePath('/profile')
   revalidatePath('/')
   
-  return res.json()
+  return { success: true, data: await res.json() }
 }
 
 export async function getWatchlist() {

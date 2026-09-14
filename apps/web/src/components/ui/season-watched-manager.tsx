@@ -53,13 +53,14 @@ export function SeasonWatchedManager({ tmdbId, seasons, onClose }: SeasonWatched
       // Also ensure the series is marked as watched at the top level
       try { await markAsWatched(tmdbId, 'tv') } catch {}
       
-      await saveSeasonProgress(
+      const res = await saveSeasonProgress(
         tmdbId,
         season.season_number,
         true,
         [],
         season.episode_count
       )
+      if (res?.error) throw new Error(res.error)
       setProgress(prev => {
         const newProgress = {
           ...prev,
@@ -121,19 +122,21 @@ export function SeasonWatchedManager({ tmdbId, seasons, onClose }: SeasonWatched
 
     try {
       try { await markAsWatched(tmdbId, 'tv') } catch {}
-      await saveSeasonProgress(
+      const res = await saveSeasonProgress(
         tmdbId,
         season.season_number,
         watchedAll,
         watchedAll ? [] : newEpisodes,
         season.episode_count
       )
-    } catch (err) {
+      if (res?.error) throw new Error(res.error)
+    } catch (err: any) {
       // Revert on failure
       setProgress(prev => ({
         ...prev,
         [key]: current
       }))
+      alert(err.message || 'Failed to update season progress.')
     }
   }
 
@@ -149,11 +152,14 @@ export function SeasonWatchedManager({ tmdbId, seasons, onClose }: SeasonWatched
     })
 
     try {
-      await saveSeasonProgress(tmdbId, season.season_number, false, [], season.episode_count)
-    } catch (err) {
+      const res = await saveSeasonProgress(tmdbId, season.season_number, false, [], season.episode_count)
+      if (res?.error) throw new Error(res.error)
+    } catch (err: any) {
       if (current) {
         setProgress(prev => ({ ...prev, [key]: current }))
       }
+      alert(err.message || 'Failed to unmark season.')
+    }
     }
   }
 

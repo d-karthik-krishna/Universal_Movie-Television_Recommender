@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache'
 
 export async function submitRating(tmdbId: number, mediaType: string, rating: number, reviewText: string) {
   const token = await getToken()
-  if (!token) throw new Error('Not authenticated')
+  if (!token) return { error: 'Not authenticated' }
 
   const baseUrl = API_URL
 
@@ -20,14 +20,15 @@ export async function submitRating(tmdbId: number, mediaType: string, rating: nu
   })
 
   if (!res.ok) {
-    if (res.status === 403) throw new Error('Must watch first')
-    throw new Error('Failed to submit feedback')
+    if (res.status === 403) return { error: 'You must watch the content before submitting a rating or feedback.' }
+    const err = await res.json().catch(() => ({}))
+    return { error: err.detail || 'Failed to submit feedback' }
   }
   
   revalidatePath('/profile')
   revalidatePath(`/movie/${tmdbId}`)
   
-  return res.json()
+  return { success: true, data: await res.json() }
 }
 
 export async function getRating(tmdbId: number, mediaType: string): Promise<{rating: number | null, review: string | null}> {

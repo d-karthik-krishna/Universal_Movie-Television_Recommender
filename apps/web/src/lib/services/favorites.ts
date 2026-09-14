@@ -37,7 +37,7 @@ export async function getFavorites(): Promise<any[]> {
 
 export async function markAsFavorite(tmdbId: number, mediaType: string) {
   const token = await getToken()
-  if (!token) throw new Error('Not authenticated')
+  if (!token) return { error: 'Not authenticated' }
 
   const baseUrl = API_URL
 
@@ -51,19 +51,20 @@ export async function markAsFavorite(tmdbId: number, mediaType: string) {
   })
 
   if (!res.ok) {
-    if (res.status === 403) throw new Error('Must watch first')
-    throw new Error('Failed to mark as favorite')
+    if (res.status === 403) return { error: 'You must watch the content before adding it to favorites.' }
+    const err = await res.json().catch(() => ({}))
+    return { error: err.detail || 'Failed to mark as favorite' }
   }
   
   revalidatePath('/profile')
   revalidatePath('/')
   
-  return res.json()
+  return { success: true, data: await res.json() }
 }
 
 export async function unmarkAsFavorite(tmdbId: number, mediaType: string) {
   const token = await getToken()
-  if (!token) throw new Error('Not authenticated')
+  if (!token) return { error: 'Not authenticated' }
 
   const baseUrl = API_URL
 
@@ -72,10 +73,13 @@ export async function unmarkAsFavorite(tmdbId: number, mediaType: string) {
     headers: { Authorization: `Bearer ${token}` }
   })
 
-  if (!res.ok) throw new Error('Failed to unmark as favorite')
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    return { error: err.detail || 'Failed to unmark as favorite' }
+  }
   
   revalidatePath('/profile')
   revalidatePath('/')
   
-  return res.json()
+  return { success: true, data: await res.json() }
 }

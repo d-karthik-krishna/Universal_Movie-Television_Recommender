@@ -74,19 +74,22 @@ export function EditProfileModal({ user }: EditProfileModalProps) {
       
       // Upload new photo if selected
       if (selectedFile) {
-        const updatedUser = await uploadAvatar(selectedFile)
-        currentAvatarUrl = updatedUser.avatar_url
+        const uploadRes = await uploadAvatar(selectedFile)
+        if (uploadRes?.error) throw new Error(uploadRes.error)
+        currentAvatarUrl = uploadRes.data.avatar_url
       } else if (!avatarPreview) {
         // User removed the photo
         currentAvatarUrl = undefined
       }
       
-      await updateUser({
+      const updateRes = await updateUser({
         display_name: formData.display_name.trim() || null,
         username: formData.username.trim(),
         bio: formData.bio.trim() || null,
         avatar_url: !avatarPreview ? null : (selectedFile ? undefined : currentAvatarUrl)
       } as any)
+      
+      if (updateRes?.error) throw new Error(updateRes.error)
       
       setIsOpen(false)
       router.refresh()

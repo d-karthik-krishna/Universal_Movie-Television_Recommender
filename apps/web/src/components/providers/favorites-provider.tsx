@@ -30,7 +30,8 @@ export function FavoritesProvider({
     })
     
     try {
-      await serverMarkAsFavorite(tmdbId, mediaType)
+      const res = await serverMarkAsFavorite(tmdbId, mediaType)
+      if (res?.error) throw new Error(res.error)
     } catch (err) {
       // Revert if failed
       setFavorites(prev => {
@@ -51,7 +52,8 @@ export function FavoritesProvider({
     })
     
     try {
-      await serverUnmarkAsFavorite(tmdbId, mediaType)
+      const res = await serverUnmarkAsFavorite(tmdbId, mediaType)
+      if (res?.error) throw new Error(res.error)
     } catch (err) {
       // Revert if failed
       setFavorites(prev => {

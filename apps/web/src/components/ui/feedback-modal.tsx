@@ -46,15 +46,18 @@ export function FeedbackModal({ tmdbId, mediaType }: FeedbackModalProps) {
     if (rating === 0) return
     setLoading(true)
     try {
-      await submitRating(tmdbId, mediaType, rating, reviewText)
+      const res = await submitRating(tmdbId, mediaType, rating, reviewText)
+      if (res?.error) throw new Error(res.error)
       setSuccess(true)
       setTimeout(() => {
         setIsOpen(false)
         setSuccess(false)
       }, 1500)
-    } catch (error) {
-      if ((error as Error).message.includes('Not authenticated')) {
+    } catch (err: any) {
+      if (err.message.includes('Not authenticated')) {
         router.push('/login')
+      } else {
+        alert(err.message || 'Failed to submit feedback')
       }
     } finally {
       setLoading(false)

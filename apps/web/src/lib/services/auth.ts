@@ -85,7 +85,7 @@ export async function getCurrentUser() {
 
 export async function updateUser(data: { display_name?: string, username?: string, bio?: string, avatar_url?: string }) {
   const token = await getToken()
-  if (!token) throw new Error('Not authenticated')
+  if (!token) return { error: 'Not authenticated' }
 
   const baseUrl = API_URL
 
@@ -100,15 +100,15 @@ export async function updateUser(data: { display_name?: string, username?: strin
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
-    throw new Error(err.detail || 'Update failed')
+    return { error: err.detail || 'Update failed' }
   }
 
-  return res.json()
+  return { success: true, data: await res.json() }
 }
 
 export async function uploadAvatar(file: File) {
   const token = await getToken()
-  if (!token) throw new Error('Not authenticated')
+  if (!token) return { error: 'Not authenticated' }
 
   const baseUrl = API_URL
 
@@ -126,8 +126,8 @@ export async function uploadAvatar(file: File) {
   if (!res.ok) {
     let err
     try { err = await res.json() } catch(e) {}
-    throw new Error(err?.detail || 'Upload failed')
+    return { error: err?.detail || 'Upload failed' }
   }
 
-  return res.json()
+  return { success: true, data: await res.json() }
 }
