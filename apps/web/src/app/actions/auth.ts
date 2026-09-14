@@ -7,13 +7,14 @@ export async function setTokenCookie(token: string) {
   cookieStore.set('cinesphere_token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none',
+    sameSite: 'lax',
     path: '/',
     maxAge: 7 * 24 * 60 * 60 // 7 days
   })
 }
 
 export async function removeTokenCookie() {
+  console.log('[removeTokenCookie] Clearing cinesphere_token cookie')
   const cookieStore = await cookies()
   cookieStore.delete('cinesphere_token')
 }

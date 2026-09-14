@@ -20,7 +20,8 @@ export default async function ProfilePage({ searchParams }: Props) {
   const user = await getCurrentUser()
 
   if (!user) {
-    redirect('/login')
+    // If not authenticated, redirect to login
+    redirect('/login?error=SessionExpired')
   }
 
   const resolvedParams = await searchParams
@@ -33,11 +34,10 @@ export default async function ProfilePage({ searchParams }: Props) {
     getAllRatings()
   ])
 
-  // Map watchedHistory to have isFavorite and userRating for the PDF
   const pdfData = watchedHistory.map((item: any) => ({
     ...item,
     is_favorite: favorites.some((f: any) => f.id === item.id),
-    user_rating: ratings.find((r: any) => (r.provider_mappings?.[0]?.provider_id || r.id) === (item.provider_mappings?.[0]?.provider_id || item.id))?.user_rating || null
+    user_rating: ratings.find((r: any) => r.id === item.id)?.user_rating || null
   }))
 
   const tabs = [
@@ -117,7 +117,7 @@ export default async function ProfilePage({ searchParams }: Props) {
             {watchlist.map((item: any) => (
               <MovieCard 
                 key={item.id}
-                id={item.provider_mappings?.[0]?.provider_id || item.id}
+                id={item.id}
                 title={item.title} 
                 posterPath={item.poster_path} 
                 rating={item.vote_average ?? null}
@@ -149,7 +149,7 @@ export default async function ProfilePage({ searchParams }: Props) {
             {watchedHistory.map((item: any) => (
               <MovieCard 
                 key={item.id}
-                id={item.provider_mappings?.[0]?.provider_id || item.id}
+                id={item.id}
                 title={item.title} 
                 posterPath={item.poster_path} 
                 rating={item.vote_average ?? null}
@@ -181,7 +181,7 @@ export default async function ProfilePage({ searchParams }: Props) {
             {favorites.map((item: any) => (
               <MovieCard 
                 key={item.id}
-                id={item.provider_mappings?.[0]?.provider_id || item.id}
+                id={item.id}
                 title={item.title} 
                 posterPath={item.poster_path} 
                 rating={item.vote_average ?? null}
@@ -214,7 +214,7 @@ export default async function ProfilePage({ searchParams }: Props) {
               <div key={item.id} className="flex gap-4 rounded-xl border border-border bg-card p-4 shadow-sm hover:shadow-md transition-shadow">
                 <div className="w-20 shrink-0">
                   <MovieCard 
-                    id={item.provider_mappings?.[0]?.provider_id || item.id}
+                    id={item.id}
                     title={item.title} 
                     posterPath={item.poster_path} 
                     rating={null}

@@ -61,6 +61,10 @@ export function MovieCard({
     }
   }
 
+  if (!id) {
+    return <div className={cn('group relative flex-shrink-0 block w-[150px] md:w-[200px]', className)}>Invalid Media</div>
+  }
+
   return (
     <Link
       href={`/movie/${id}?type=${mediaType}`}

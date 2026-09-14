@@ -18,4 +18,7 @@ class Settings(BaseSettings):
 
 @lru_cache()
 def get_settings():
-    return Settings()
+    settings = Settings()
+    if settings.ENVIRONMENT == "production" and settings.AUTH_SECRET == "change-me":
+        raise ValueError("AUTH_SECRET must be set in production environment!")
+    return settings

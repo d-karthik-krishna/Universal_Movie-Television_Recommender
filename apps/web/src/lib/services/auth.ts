@@ -55,19 +55,31 @@ export async function logoutUser() {
 
 export async function getCurrentUser() {
   const token = await getToken()
-  if (!token) return null
+  if (!token) {
+    console.log('[getCurrentUser] No token found in cookies')
+    return null
+  }
   
   const baseUrl = API_URL
+  console.log(`[getCurrentUser] Fetching from ${baseUrl}/api/v1/auth/me`)
 
-  const res = await fetch(`${baseUrl}/api/v1/auth/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
-    cache: 'no-store'
-  })
+  try {
+    const res = await fetch(`${baseUrl}/api/v1/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      cache: 'no-store'
+    })
 
-  if (!res.ok) return null
-  return res.json()
+    if (!res.ok) { 
+      console.error('[getCurrentUser] Auth/me failed:', res.status, await res.text()); 
+      return null 
+    }
+    return res.json()
+  } catch (err) {
+    console.error('[getCurrentUser] Network/Fetch error:', err)
+    return null
+  }
 }
 
 export async function updateUser(data: { display_name?: string, username?: string, bio?: string, avatar_url?: string }) {
