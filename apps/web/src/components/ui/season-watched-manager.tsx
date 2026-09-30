@@ -160,7 +160,6 @@ export function SeasonWatchedManager({ tmdbId, seasons, onClose }: SeasonWatched
       }
       alert(err.message || 'Failed to unmark season.')
     }
-    }
   }
 
   const getSeasonStatus = (season: Season): string => {
