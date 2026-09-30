@@ -2,6 +2,7 @@ from typing import Annotated, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, delete
+from sqlalchemy.orm.attributes import flag_modified
 
 from app.database import get_db
 from app.models.user import User
@@ -563,6 +564,7 @@ async def save_season_progress(
     }
     metadata["seasons"] = seasons
     history_item.metadata_json = metadata
+    flag_modified(history_item, 'metadata_json')
 
     # Auto-remove from watchlist if all regular seasons are watched
     if content.number_of_seasons:

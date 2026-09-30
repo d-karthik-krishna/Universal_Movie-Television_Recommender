@@ -51,7 +51,7 @@ export async function removeFromWatchlist(tmdbId: number, mediaType: string) {
   revalidatePath('/profile')
   revalidatePath('/')
   
-  return { success: true, data: await res.json() }
+  return { success: true, data: await res.json().catch(() => ({})) }
 }
 
 export async function getWatchlist() {

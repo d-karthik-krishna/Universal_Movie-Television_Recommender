@@ -108,7 +108,7 @@ export default async function HomePage() {
           <SectionHeader title="Trending Now" icon={<TrendingUp className="h-6 w-6 text-primary" />} />
           <div className="mt-6">
             <AccordionGallery
-              items={trending.results.slice(5, 10).map((item: any) => ({
+              items={trending.results.slice(5, 10).filter((item: any) => item.backdrop_path || item.poster_path).map((item: any) => ({
                 image: `https://image.tmdb.org/t/p/w1280${item.backdrop_path || item.poster_path}`,
                 label: item.title || item.name || 'Unknown',
                 link: `/movie/${item.id}?type=${item.media_type || 'movie'}`,

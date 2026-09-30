@@ -4,16 +4,19 @@ import { cn } from '@/lib/utils'
 interface ErrorStateProps {
   title?: string
   description?: string
+  message?: string
   onRetry?: () => void
   className?: string
 }
 
 export function ErrorState({
   title = 'Something went wrong',
-  description = 'An error occurred while loading content. Please try again.',
+  description,
+  message,
   onRetry,
   className,
 }: ErrorStateProps) {
+  const desc = description || message || 'An error occurred while loading content. Please try again.'
   return (
     <div
       className={cn(
@@ -26,7 +29,7 @@ export function ErrorState({
       </div>
       <h3 className="text-lg font-semibold">{title}</h3>
       <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-        {description}
+        {desc}
       </p>
       {onRetry && (
         <button

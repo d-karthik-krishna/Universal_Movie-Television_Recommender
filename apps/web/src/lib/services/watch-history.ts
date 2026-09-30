@@ -80,7 +80,7 @@ export async function unmarkAsWatched(tmdbId: number, mediaType: string) {
   revalidatePath('/profile')
   revalidatePath('/')
   
-  return { success: true, data: await res.json() }
+  return { success: true, data: await res.json().catch(() => ({})) }
 }
 
 export async function getSeriesProgress(tmdbId: number): Promise<Record<string, any>> {
@@ -134,5 +134,5 @@ export async function saveSeasonProgress(
   revalidatePath('/profile')
   revalidatePath('/')
   
-  return { success: true, data: await res.json() }
+  return { success: true, data: await res.json().catch(() => ({})) }
 }

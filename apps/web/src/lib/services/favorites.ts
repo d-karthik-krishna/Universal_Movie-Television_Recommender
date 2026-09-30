@@ -81,5 +81,5 @@ export async function unmarkAsFavorite(tmdbId: number, mediaType: string) {
   revalidatePath('/profile')
   revalidatePath('/')
   
-  return { success: true, data: await res.json() }
+  return { success: true, data: await res.json().catch(() => ({})) }
 }

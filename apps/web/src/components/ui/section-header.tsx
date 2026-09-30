@@ -6,12 +6,16 @@ interface SectionHeaderProps {
   title: string
   href?: string
   className?: string
+  icon?: React.ReactNode
 }
 
-export function SectionHeader({ title, href, className }: SectionHeaderProps) {
+export function SectionHeader({ title, href, className, icon }: SectionHeaderProps) {
   return (
     <div className={cn('flex items-center justify-between', className)}>
-      <h2 className="text-xl font-bold tracking-tight md:text-2xl">{title}</h2>
+      <h2 className="text-xl font-bold tracking-tight md:text-2xl flex items-center gap-2">
+        {icon}
+        {title}
+      </h2>
       {href && (
         <Link
           href={href}

@@ -98,6 +98,7 @@ function ExploreContent() {
       if (country) params.append('with_origin_country', country)
 
       const res = await fetch(`${API_URL}/api/v1/content/discover?${params.toString()}`)
+      if (!res.ok) throw new Error(`API error: ${res.status}`)
       const data = await res.json()
       setResults(data.results || [])
     } catch {

@@ -33,7 +33,7 @@ export function WatchlistButton({ tmdbId, mediaType }: Props) {
   return (
     <button
       onClick={handleWatchlist}
-      disabled={loading || added}
+      disabled={loading}
       className={`flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold transition-all shadow-md ${
         added 
           ? 'bg-secondary text-secondary-foreground' 

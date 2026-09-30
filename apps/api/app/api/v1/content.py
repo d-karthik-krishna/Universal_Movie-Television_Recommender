@@ -136,7 +136,7 @@ async def get_content_detail(
     def video_sort_key(v):
         type_score = {"Trailer": 3, "Teaser": 2, "Featurette": 1, "Clip": 0}.get(v.get("type"), 0)
         official_score = 1 if v.get("official") else 0
-        date_str = v.get("published_at", "")
+        date_str = v.get("published_at") or ""
         return (official_score, type_score, date_str)
         
     youtube_videos.sort(key=video_sort_key, reverse=True)
@@ -152,5 +152,5 @@ async def get_content_detail(
         "credits": {"cast": cast},
         "trailers": trailers,
         "similar": similar_results,
-        "watch_providers": content.watch_providers if content else {}
+        "watch_providers": (content.watch_providers if content and content.watch_providers else {})
     }

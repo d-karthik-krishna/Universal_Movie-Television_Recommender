@@ -39,7 +39,9 @@ export default async function PublicProfilePage({ params }: Props) {
     notFound()
   }
 
-  const { user, watched } = profile
+  const { user, watched: rawWatched } = profile
+  
+  const watched = rawWatched || []
   
   const favorites = watched.filter((item: any) => item.is_favorite)
   const ratings = watched.filter((item: any) => item.user_rating !== null)

@@ -17,6 +17,7 @@ export interface ContentItem {
   original_language?: string
   media_type?: string
   genre_ids?: number[]
+  watch_providers?: Record<string, any>
 }
 
 export interface ContentResponse {
@@ -45,6 +46,7 @@ export interface ContentDetail {
   credits: { cast: CastMember[] }
   trailers: Trailer[]
   similar: ContentItem[]
+  watch_providers?: Record<string, any>
 }
 
 export interface Season {

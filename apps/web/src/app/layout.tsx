@@ -33,20 +33,25 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const user = await getCurrentUser()
+  let user = null
   let initialWatchlistIds: number[] = []
   let initialWatchedIds: number[] = []
   let initialFavoriteIds: number[] = []
   
-  if (user) {
-    const [watchlist, watchedIds, favoriteIds] = await Promise.all([
-      getWatchlist(),
-      getWatchedIds(),
-      getFavoriteIds()
-    ])
-    initialWatchlistIds = watchlist.map((item: any) => typeof item.id === 'string' ? parseInt(item.id) : item.id)
-    initialWatchedIds = watchedIds
-    initialFavoriteIds = favoriteIds
+  try {
+    user = await getCurrentUser()
+    if (user) {
+      const [watchlist, watchedIds, favoriteIds] = await Promise.all([
+        getWatchlist(),
+        getWatchedIds(),
+        getFavoriteIds()
+      ])
+      initialWatchlistIds = watchlist.map((item: any) => typeof item.id === 'string' ? parseInt(item.id) : item.id)
+      initialWatchedIds = watchedIds
+      initialFavoriteIds = favoriteIds
+    }
+  } catch (err) {
+    console.error("Layout fetch error:", err)
   }
 
   return (

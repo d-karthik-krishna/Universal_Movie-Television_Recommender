@@ -27,12 +27,25 @@ export default async function ProfilePage({ searchParams }: Props) {
   const resolvedParams = await searchParams
   const activeTab = (resolvedParams?.tab as string) || 'watchlist'
 
-  const [watchlist, watchedHistory, favorites, ratings] = await Promise.all([
-    getWatchlist(),
-    getWatchHistory(),
-    getFavorites(),
-    getAllRatings()
-  ])
+  let watchlist: any[] = []
+  let watchedHistory: any[] = []
+  let favorites: any[] = []
+  let ratings: any[] = []
+
+  try {
+    const results = await Promise.all([
+      getWatchlist(),
+      getWatchHistory(),
+      getFavorites(),
+      getAllRatings()
+    ])
+    watchlist = results[0]
+    watchedHistory = results[1]
+    favorites = results[2]
+    ratings = results[3]
+  } catch (err) {
+    console.error("Profile fetch error:", err)
+  }
 
   const pdfData = watchedHistory.map((item: any) => ({
     ...item,

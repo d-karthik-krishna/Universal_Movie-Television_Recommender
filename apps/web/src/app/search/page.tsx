@@ -55,6 +55,7 @@ export default function SearchPage() {
     setLoading(true)
     try {
       const res = await fetch(`${API_URL}/api/v1/content/search?q=${encodeURIComponent(q)}`)
+      if (!res.ok) throw new Error(`Search failed: ${res.status}`)
       const data = await res.json()
       // Filter to only movies and tv shows (exclude people)
       const filtered = (data.results || []).filter(

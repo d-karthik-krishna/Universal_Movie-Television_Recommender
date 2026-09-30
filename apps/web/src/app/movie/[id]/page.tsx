@@ -151,12 +151,13 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
       )}
 
       {/* Where to Watch */}
-      {detail.watch_providers && (detail.watch_providers.IN?.flatrate || detail.watch_providers.US?.flatrate) && (
+      {detail.watch_providers && Object.keys(detail.watch_providers).length > 0 && (detail.watch_providers.IN?.flatrate || detail.watch_providers.US?.flatrate) && (
         <section className="max-w-3xl rounded-xl border border-border bg-card p-6 shadow-sm">
           <h2 className="text-lg font-bold">Where to Watch</h2>
           <div className="mt-4 flex flex-col gap-3">
             {(() => {
-              const countryData = detail.watch_providers.IN || detail.watch_providers.US;
+              const countryData = detail.watch_providers?.IN || detail.watch_providers?.US;
+              if (!countryData) return <p className="text-sm text-muted-foreground">Not currently available to stream.</p>;
               const link = countryData.link;
               const providers = countryData.flatrate || [];
               

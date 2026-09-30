@@ -6,6 +6,7 @@ import os
 
 from app.config import get_settings
 from app.redis import close_redis
+from app.database import engine
 from app.api.v1.router import api_router
 
 settings = get_settings()
@@ -18,6 +19,7 @@ async def lifespan(app: FastAPI):
     yield
     # Shutdown
     await close_redis()
+    await engine.dispose()
 
 app = FastAPI(
     title="CineSphere API",
@@ -29,7 +31,6 @@ app = FastAPI(
 frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
 origins = list(set(settings.cors_origin_list + [
     frontend_url,
-    "https://your-project-name.vercel.app", 
 ]))
 
 app.add_middleware(
